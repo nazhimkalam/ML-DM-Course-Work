@@ -106,7 +106,9 @@ remove.outliers(df.filtered$Holl.Ra, "Holl.Ra")
 df.normalized = as.data.frame(scale(df.filtered))
 View(df.normalized)
 
-
+# PERFORMING PCA (PRINCIPAL COMPONENT ANALYSIS) / DIMENSIONALITY REDUCTION
+df.pca = prcomp(df.normalized)
+summary(df.pca)
 
 
 

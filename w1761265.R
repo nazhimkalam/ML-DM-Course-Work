@@ -16,7 +16,10 @@ library("readxl")
 df = read_excel("D:/IIT/2nd Year/Data Mining & Machine Leanring/Coursework/vehicles.xlsx")
 View(df)
 
-# Removing the Sample index column and the class column from the dataset
+# Displaying the types of unique classes present in the data-set
+unique(df[["Class"]])
+
+# Removing the Sample index column and the class column from the data-set
 df.filtered = subset(df, select = -c(Samples, Class))
 
 # Viewing the head of the data-set
@@ -55,7 +58,7 @@ display.boxplot(df.filtered$Kurt.maxis, "Kurt.maxis")
 display.boxplot(df.filtered$Kurt.Maxis, "Kurt.Maxis")
 display.boxplot(df.filtered$Holl.Ra, "Holl.Ra")
 
-
+# REMOVING THE OUTLIERS FROM THE DATASET
 # Discarding the outliers from the data-set (only for the column which has outliers)
 # any value greater than bench.mark value will be replace with the bench mark value
 
@@ -98,11 +101,10 @@ remove.outliers(df.filtered$Kurt.maxis, "Kurt.maxis")
 remove.outliers(df.filtered$Kurt.Maxis, "Kurt.Maxis")
 remove.outliers(df.filtered$Holl.Ra, "Holl.Ra")
 
-
-
-
-
-
+# NORMALIZING THE DATASET (BRINGING ALL THE DATA INTO A SINGLE UNQIUE SCALE)
+# Performing normalization using the Z-Score Standardization
+df.normalized = as.data.frame(scale(df.filtered))
+View(df.normalized)
 
 
 

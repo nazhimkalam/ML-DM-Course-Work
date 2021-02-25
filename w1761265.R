@@ -112,7 +112,8 @@ summary(df.pca)
 
 
 
-
+# https://rpubs.com/wiwiekwin/585082
+# https://rstudio-pubs-static.s3.amazonaws.com/65117_4a28293b5229477bbd5138cececad2db.html
 
 
 

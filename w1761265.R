@@ -110,10 +110,21 @@ View(df.normalized)
 df.pca = prcomp(df.normalized)
 summary(df.pca)
 
+# Plotting the PCA data to find the best number of Principal Components.
+# Using the elbow method of the plot below we can get the number of components which 
+# explain 85% or greater of the variation (BEST SET OF COMPONENTS TO TAKE)
+# In this case the first 4 components are the best, because it covers the greatest 
+# area of the graph and has the sudden decrease after the 4th component
+plot(df.pca)
+plot(df.pca, type='l')
 
+# comp.data contains the BEST PCA Component data extract
+comp.data = data.frame(df.pca$x[,1:4])
+View(comp.data)
+     
 
-# https://rpubs.com/wiwiekwin/585082
-# https://rstudio-pubs-static.s3.amazonaws.com/65117_4a28293b5229477bbd5138cececad2db.html
+# https://www.r-bloggers.com/2014/06/pca-and-k-means-clustering-of-delta-aircraft/
+
 
 
 

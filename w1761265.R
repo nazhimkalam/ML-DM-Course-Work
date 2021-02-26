@@ -7,10 +7,15 @@
 # CLUSTERING PART
 
 # Installing package to read Excel Data-set
-install.packages("readxl")
+install.packages("readxl")     # used to read excel data files
+install.packages("factoextra") # used to determine the optimal number clusters
+install.packages("NbClust")    # used to compute about multiple methods at once,
+                               # in order to find the optimal number of clusters.
 
 # Loading the package
 library("readxl")
+library("factoextra")
+library("NbClust")
 
 # Reading the data-set "vehicles.xlsx"
 df = read_excel("D:/IIT/2nd Year/Data Mining & Machine Leanring/Coursework/vehicles.xlsx")
@@ -124,7 +129,7 @@ View(comp.data)
      
 # DETERMINE THE NUMBER OF CLUSTERS CENTERS (CENTROIDS) (via MANUAL and AUTOMATED TOOLS)
 
-# MANUALLY FIND THE CENTROIDS / CLUSTERS
+# MANUALLY FIND THE CENTROIDS / CLUSTERS (Elbow Method)
 tot.withinss = vector(mode = "character", length = 10)
 for (i in 1:10){
   vehicleCluster = kmeans(comp.data, centers = i, nstart = 20)
@@ -135,8 +140,16 @@ plot(1:10, tot.withinss, type="b")
 # from the plotted result we can see that 4 is the optimal number of centroids/clusters
 
 # AUTOMATED TOOLS TO FIND THE CENTROIDS
+# Using Elbow method
+# The below method also points out that 4 is the optimal number of centroids/clusters to be taken
+fviz_nbclust(comp.data, kmeans, method = "wss") + 
+  geom_vline(xintercept = 4, linetype = 2) + 
+  labs(subtitle = "Elbow method")
 
+
+# References used
 # https://www.r-bloggers.com/2014/06/pca-and-k-means-clustering-of-delta-aircraft/
+# https://www.datanovia.com/en/lessons/determining-the-optimal-number-of-clusters-3-must-know-methods/
 
 
 

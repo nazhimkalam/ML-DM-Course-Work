@@ -122,6 +122,19 @@ plot(df.pca, type='l')
 comp.data = data.frame(df.pca$x[,1:4])
 View(comp.data)
      
+# DETERMINE THE NUMBER OF CLUSTERS CENTERS (CENTROIDS) (via MANUAL and AUTOMATED TOOLS)
+
+# MANUALLY FIND THE CENTROIDS / CLUSTERS
+tot.withinss = vector(mode = "character", length = 10)
+for (i in 1:10){
+  vehicleCluster = kmeans(comp.data, centers = i, nstart = 20)
+  tot.withinss[i] = vehicleCluster$tot.withinss
+}
+
+plot(1:10, tot.withinss, type="b")
+# from the plotted result we can see that 4 is the optimal number of centroids/clusters
+
+# AUTOMATED TOOLS TO FIND THE CENTROIDS
 
 # https://www.r-bloggers.com/2014/06/pca-and-k-means-clustering-of-delta-aircraft/
 

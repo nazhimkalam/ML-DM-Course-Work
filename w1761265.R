@@ -131,11 +131,23 @@ View(comp.data)
 
 # AUTOMATED TOOLS TO FIND THE CENTROIDS
 
-# USING ELBOW METHOD
+# USING ELBOW METHOD (Gave 4)
 # The below method points out that 4 is the optimal number of centroids/clusters to be taken
 fviz_nbclust(comp.data, kmeans, method = "wss") + 
   geom_vline(xintercept = 4, linetype = 2) + 
   labs(subtitle = "Elbow method")
+
+# USING THE SILHOUETTE METHOD (Gave 2)
+fviz_nbclust(comp.data, kmeans, method = "silhouette")+
+  labs(subtitle = "Silhouette method")
+
+# USING GAP STATISTIC ( nboot = 50 to keep the function speedy
+                      # recommended value: nboot= 500 for your analysis.
+                      # Use verbose = FALSE to hide computing progression.)
+# (Gave 3)
+set.seed(150)
+fviz_nbclust(comp.data, kmeans, nstart = 50,  method = "gap_stat", nboot = 50)+
+  labs(subtitle = "Gap statistic method")
 
 
 # MANUALLY FIND THE CENTROIDS / CLUSTERS 

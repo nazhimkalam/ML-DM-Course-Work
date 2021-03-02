@@ -11,11 +11,15 @@ install.packages("readxl")     # used to read excel data files
 install.packages("factoextra") # used to determine the optimal number clusters
 install.packages("NbClust")    # used to compute about multiple methods at once,
                                # in order to find the optimal number of clusters.
+install.packages("factoextra") # used to plot the clusters out
+# install.packages("geosphere")
 
 # Loading the package
-library("readxl")
-library("factoextra")
-library("NbClust")
+library(readxl)
+library(factoextra)
+library(NbClust)
+library(factoextra)
+# library(geosphere)
 
 # Reading the data-set "vehicles.xlsx"
 df = read_excel("D:/IIT/2nd Year/Data Mining & Machine Leanring/Coursework/vehicles.xlsx")
@@ -27,7 +31,7 @@ unique(df[["Class"]])
 # Removing the Sample index column and the class column from the data-set
 df.filtered = subset(df, select = -c(Samples, Class))
 
-# Viewing the df.filtered data-set
+# Viewing the filtered data-set
 View(df.filtered)
 
 # [PRE-PROCESSING DATA] PERFORMING SCALING AND OUTLIERS REMOVAL
@@ -154,17 +158,46 @@ fviz_nbclust(comp.data, kmeans, nstart = 50,  method = "gap_stat", nboot = 50)+
 
 # USING ELBOW METHOD
 tot.withinss = vector(mode = "character", length = 10)
-for (i in 1:10){
-  vehicleCluster = kmeans(comp.data, centers = i, nstart = 20)
-  print("-------------------Creating the Confusion Matrix---------------------")
-  print(table(df$Class, vehicleCluster$cluster))  # This is the confusion matrics
 
+for (i in 1:10){
+  set.seed(50)
+  vehicleCluster = kmeans(comp.data, centers = i, nstart = 20)
+  print(vehicleCluster)
+  
+  print("-------------------Creating the Confusion Matrix---------------------")
+  
+  # This is the confusion matrix
+  cm = as.matrix(table(Actual = df$Class, Predicted = vehicleCluster$cluster))
+  print(cm)
+
+  # Total within-cluster sum of squares
   tot.withinss[i] = vehicleCluster$tot.withinss
 }
 
-plot(1:10, tot.withinss, type="b")
-# from the plotted result we can also see that 4 is the optimal number of centroids/clusters
+# plot to find the best number of clusters to be taken
+plot(1:10, 
+     tot.withinss, 
+     type="b",
+     pch=19,
+     xlab = "Number of clusters K",
+     ylab = "Total within-clusters sum of squares")
 
+# from the plotted result we can also see that 4 is the optimal number of centroids/clusters
+set.seed(100)
+vehicleCluster = kmeans(comp.data, centers = 4, nstart = 20)
+fviz_cluster(vehicleCluster, data = comp.data)
+
+# Displaying the sizes(number of observations in each cluster) of each cluster 
+vehicleCluster$size
+
+# Displaying the cluster distribution
+vehicleCluster$cluster
+
+# Getting the centers (A matrix of cluster centers). 
+# You get a 4 by 4 matrix representing the centers of each cluster (x,y,z,z') (4D coordinate)
+#--> Since we get the coordinates in 4D ask sir if we need to perform pca again to scope down to 2-D coordinates
+vehicleCluster$centers 
+View(vehicleCluster$centers)
 
 
 
@@ -172,7 +205,8 @@ plot(1:10, tot.withinss, type="b")
 # https://www.r-bloggers.com/2014/06/pca-and-k-means-clustering-of-delta-aircraft/
 # https://www.datanovia.com/en/lessons/determining-the-optimal-number-of-clusters-3-must-know-methods/
 # https://rpubs.com/Nitika/kmeans_Iris
-
+# https://www.datanovia.com/en/lessons/k-means-clustering-in-r-algorith-and-practical-examples/
+# https://uc-r.github.io/kmeans_clustering
 
 
 

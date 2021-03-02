@@ -27,7 +27,7 @@ unique(df[["Class"]])
 # Removing the Sample index column and the class column from the data-set
 df.filtered = subset(df, select = -c(Samples, Class))
 
-# Viewing the head of the data-set
+# Viewing the df.filtered data-set
 View(df.filtered)
 
 # [PRE-PROCESSING DATA] PERFORMING SCALING AND OUTLIERS REMOVAL

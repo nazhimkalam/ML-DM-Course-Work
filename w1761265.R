@@ -12,6 +12,7 @@ install.packages("factoextra") # used to determine the optimal number clusters
 install.packages("NbClust")    # used to compute about multiple methods at once,
                                # in order to find the optimal number of clusters.
 install.packages("factoextra") # used to plot the clusters out
+install.packages("caret")
 # install.packages("geosphere")
 
 # Loading the package
@@ -19,6 +20,7 @@ library(readxl)
 library(factoextra)
 library(NbClust)
 library(factoextra)
+library(caret)
 # library(geosphere)
 
 # Reading the data-set "vehicles.xlsx"
@@ -159,16 +161,66 @@ fviz_nbclust(comp.data, kmeans, nstart = 50,  method = "gap_stat", nboot = 50)+
 # USING ELBOW METHOD
 tot.withinss = vector(mode = "character", length = 10)
 
-for (i in 1:10){
-  set.seed(50)
-  vehicleCluster = kmeans(comp.data, centers = i, nstart = 20)
-  print(vehicleCluster)
+# Classification Report Function
+classification_report <- function(comparison_table, dp = 2) {
+  #total counts
+  counts <- sum(comparison_table)
   
-  print("-------------------Creating the Confusion Matrix---------------------")
+  #total sums for each column
+  column_sums <- colSums(comparison_table)
+  
+  #total sums for each row
+  row_sums <- rowSums(comparison_table)
+  
+  #true positive value
+  tp <- diag(comparison_table)
+  
+  #true negative
+  tn <- counts - (column_sums + row_sums - tp)
+  
+  #false positive
+  fp <- row_sums - tp
+  
+  #false negative
+  fn <- column_sums - tp
+  
+  #precision
+  pr <- tp / (tp + fp)
+  
+  #recall
+  re <- tp / (tp + fn)
+  
+  #f1 score
+  f1 <- 2 * pr * re / (pr + re)
+  
+  #accuracy
+  ac <- sum(tp) / counts
+  
+  # Displaying the Accuracy, Precision and Recall values
+  print("Accuracy:")
+  print(ac)
+  
+  print("Precision:")
+  print(pr)
+  
+  print("Recall:")
+  print(re)
+
+}
+
+# Looping from 1 to the max optimal cluster to find its evaluation result
+for (i in 1:4){
+  set.seed(50)
+  
+  # Performing Kmeans clustering
+  vehicleCluster = kmeans(comp.data, centers = i, nstart = 20)
   
   # This is the confusion matrix
   cm = as.matrix(table(Actual = df$Class, Predicted = vehicleCluster$cluster))
   print(cm)
+
+  # Display Classification report
+  classification_report(comparison_table = cm)
 
   # Total within-cluster sum of squares
   tot.withinss[i] = vehicleCluster$tot.withinss
@@ -207,6 +259,7 @@ View(vehicleCluster$centers)
 # https://rpubs.com/Nitika/kmeans_Iris
 # https://www.datanovia.com/en/lessons/k-means-clustering-in-r-algorith-and-practical-examples/
 # https://uc-r.github.io/kmeans_clustering
+# https://www.guru99.com/r-k-means-clustering.html
 
 
 

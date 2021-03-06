@@ -12,7 +12,7 @@ install.packages("factoextra") # used to determine the optimal number clusters
 install.packages("NbClust")    # used to compute about multiple methods at once,
                                # in order to find the optimal number of clusters.
 install.packages("factoextra") # used to plot the clusters out
-install.packages("caret")
+# install.packages("caret")
 # install.packages("geosphere")
 
 # Loading the package
@@ -20,7 +20,7 @@ library(readxl)
 library(factoextra)
 library(NbClust)
 library(factoextra)
-library(caret)
+# library(caret)
 # library(geosphere)
 
 # Reading the data-set "vehicles.xlsx"
@@ -70,7 +70,7 @@ display.boxplot(df.filtered$Kurt.Maxis, "Kurt.Maxis")
 display.boxplot(df.filtered$Holl.Ra, "Holl.Ra")
 
 # REMOVING THE OUTLIERS FROM THE DATASET
-# Discarding the outliers from the data-set (only for the column which has outliers)
+# Discarding the outliers from the data-set, 
 # any value greater than bench.mark value will be replace with the bench mark value
 
 remove.outliers = function(data, column.name){
@@ -144,6 +144,7 @@ fviz_nbclust(comp.data, kmeans, method = "wss") +
   labs(subtitle = "Elbow method")
 
 # USING THE SILHOUETTE METHOD (Gave 2)
+# The below method points out that 2 is the optimal number of centroids/clusters to be taken
 fviz_nbclust(comp.data, kmeans, method = "silhouette")+
   labs(subtitle = "Silhouette method")
 
@@ -151,6 +152,7 @@ fviz_nbclust(comp.data, kmeans, method = "silhouette")+
                       # recommended value: nboot= 500 for your analysis.
                       # Use verbose = FALSE to hide computing progression.)
 # (Gave 3)
+# The below method points out that 3 is the optimal number of centroids/clusters to be taken
 set.seed(150)
 fviz_nbclust(comp.data, kmeans, nstart = 50,  method = "gap_stat", nboot = 50)+
   labs(subtitle = "Gap statistic method")
@@ -159,7 +161,7 @@ fviz_nbclust(comp.data, kmeans, nstart = 50,  method = "gap_stat", nboot = 50)+
 # MANUALLY FIND THE CENTROIDS / CLUSTERS 
 
 # USING ELBOW METHOD
-tot.withinss = vector(mode = "character", length = 10)
+tot.withinss = vector(mode = "character", length = 4)
 
 # Classification Report Function
 classification_report <- function(comparison_table, dp = 2) {
@@ -190,26 +192,27 @@ classification_report <- function(comparison_table, dp = 2) {
   #recall
   re <- tp / (tp + fn)
   
-  #f1 score
-  f1 <- 2 * pr * re / (pr + re)
-  
   #accuracy
   ac <- sum(tp) / counts
   
   # Displaying the Accuracy, Precision and Recall values
-  print("Accuracy:")
+  print("---------------------")
+  print("Accuracy")
   print(ac)
   
-  print("Precision:")
+  print("---------------------")
+  print("Precision")
   print(pr)
   
-  print("Recall:")
+  print("---------------------")
+  print("Recall")
   print(re)
 
 }
 
 # Looping from 1 to the max optimal cluster to find its evaluation result
 for (i in 1:4){
+  cat("<=============== ", "Custer ", i, " ===============>\n", sep = "")
   set.seed(50)
   
   # Performing Kmeans clustering
@@ -217,6 +220,7 @@ for (i in 1:4){
   
   # This is the confusion matrix
   cm = as.matrix(table(Actual = df$Class, Predicted = vehicleCluster$cluster))
+  print("Confusion Matrix")
   print(cm)
 
   # Display Classification report

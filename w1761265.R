@@ -161,7 +161,7 @@ fviz_nbclust(comp.data, kmeans, nstart = 50,  method = "gap_stat", nboot = 50)+
 # MANUALLY FIND THE CENTROIDS / CLUSTERS 
 
 # USING ELBOW METHOD
-tot.withinss = vector(mode = "character", length = 4)
+tot.withinss = vector(mode = "character", length = 10)
 
 # Classification Report Function
 classification_report <- function(comparison_table, dp = 2) {
@@ -211,7 +211,7 @@ classification_report <- function(comparison_table, dp = 2) {
 }
 
 # Looping from 1 to the max optimal cluster to find its evaluation result
-for (i in 1:4){
+for (i in 1:10){
   cat("<=============== ", "Custer ", i, " ===============>\n", sep = "")
   set.seed(50)
   
@@ -238,9 +238,10 @@ plot(1:10,
      xlab = "Number of clusters K",
      ylab = "Total within-clusters sum of squares")
 
-# from the plotted result we can also see that 4 is the optimal number of centroids/clusters
+# from the accuracy result we can see that we got the highest accuracy result for
+# 2 clusters (33%)
 set.seed(100)
-vehicleCluster = kmeans(comp.data, centers = 4, nstart = 20)
+vehicleCluster = kmeans(comp.data, centers = 2, nstart = 20)
 fviz_cluster(vehicleCluster, data = comp.data)
 
 # Displaying the sizes(number of observations in each cluster) of each cluster 
@@ -250,8 +251,8 @@ vehicleCluster$size
 vehicleCluster$cluster
 
 # Getting the centers (A matrix of cluster centers). 
-# You get a 4 by 4 matrix representing the centers of each cluster (x,y,z,z') (4D coordinate)
-#--> Since we get the coordinates in 4D ask sir if we need to perform pca again to scope down to 2-D coordinates
+# You get a 2 by 4 matrix representing the centers of each cluster (x,y,z,z') 
+# (4D coordinates) due to PCA we took 4D Data
 vehicleCluster$centers 
 View(vehicleCluster$centers)
 

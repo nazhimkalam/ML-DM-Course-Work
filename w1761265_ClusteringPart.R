@@ -24,7 +24,7 @@ library(factoextra)
 # library(geosphere)
 
 # Reading the data-set "vehicles.xlsx"
-df = read_excel("D:/IIT/2nd Year/Data Mining & Machine Leanring/Coursework/vehicles.xlsx")
+df = read_excel("./GitHub/ML-DM-Course-Work/vehicles.xlsx")
 View(df)
 
 # Displaying the types of unique classes present in the data-set

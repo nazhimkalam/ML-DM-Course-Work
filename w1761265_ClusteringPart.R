@@ -10,7 +10,7 @@
 install.packages("readxl")     # used to read excel data files
 install.packages("factoextra") # used to determine the optimal number clusters
 install.packages("NbClust")    # used to compute about multiple methods at once,
-                               # in order to find the optimal number of clusters.
+# in order to find the optimal number of clusters.
 install.packages("factoextra") # used to plot the clusters out
 # install.packages("caret")
 # install.packages("geosphere")
@@ -27,8 +27,11 @@ library(factoextra)
 df = read_excel("./GitHub/ML-DM-Course-Work/vehicles.xlsx")
 View(df)
 
+# converting the class column into factors because we are not able to get its count
+df = mutate(df, Class = as_factor(df$Class))
+
 # Displaying the types of unique classes present in the data-set
-unique(df[["Class"]])
+summary(df)
 
 # Removing the Sample index column and the class column from the data-set
 df.filtered = subset(df, select = -c(Samples, Class))
@@ -132,7 +135,7 @@ plot(df.pca, type='l')
 # comp.data contains the BEST PCA Component data extract
 comp.data = data.frame(df.pca$x[,1:4])
 View(comp.data)
-     
+
 # DETERMINE THE NUMBER OF CLUSTERS CENTERS (CENTROIDS) (via MANUAL and AUTOMATED TOOLS)
 
 # AUTOMATED TOOLS TO FIND THE CENTROIDS
@@ -149,8 +152,8 @@ fviz_nbclust(comp.data, kmeans, method = "silhouette")+
   labs(subtitle = "Silhouette method")
 
 # USING GAP STATISTIC ( nboot = 50 to keep the function speedy
-                      # recommended value: nboot= 500 for your analysis.
-                      # Use verbose = FALSE to hide computing progression.)
+# recommended value: nboot= 500 for your analysis.
+# Use verbose = FALSE to hide computing progression.)
 # (Gave 3)
 # The below method points out that 3 is the optimal number of centroids/clusters to be taken
 set.seed(150)
@@ -207,7 +210,7 @@ classification_report <- function(comparison_table, dp = 2) {
   print("---------------------")
   print("Recall")
   print(re)
-
+  
 }
 
 # Looping from 1 to the max optimal cluster to find its evaluation result
@@ -222,10 +225,10 @@ for (i in 1:10){
   cm = as.matrix(table(Actual = df$Class, Predicted = vehicleCluster$cluster))
   print("Confusion Matrix")
   print(cm)
-
+  
   # Display Classification report
   classification_report(comparison_table = cm)
-
+  
   # Total within-cluster sum of squares
   tot.withinss[i] = vehicleCluster$tot.withinss
 }
@@ -265,13 +268,3 @@ View(vehicleCluster$centers)
 # https://www.datanovia.com/en/lessons/k-means-clustering-in-r-algorith-and-practical-examples/
 # https://uc-r.github.io/kmeans_clustering
 # https://www.guru99.com/r-k-means-clustering.html
-
-
-
-
-
-
-
-
-
-

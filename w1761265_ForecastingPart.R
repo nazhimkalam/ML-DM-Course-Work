@@ -40,6 +40,28 @@ View(df)
 df = setNames(df, c("Date", "Rate"))
 View(df)
 
+# Checking for null values present from the dataset
+print(sum(is.na(df)))
+
+# Checking for the summary of the data
+print(summary(df))
+
+# Checking for outliers present 
+boxplot(df$Rate, ylab = "Rate") # Rate has outliers
+boxplot(as.Date(df$Date), ylab = "Date") # Data has no outliers
+
+# Removing outliers from the "Rate" column dataset
+
+# Calculating the upper and lower limit for the data
+bench_mark_upper = quantile(df$Rate, 0.75) + (1.5 * IQR(df$Rate))
+bench_mark_lower = quantile(df$Rate, 0.25) - (1.5 * IQR(df$Rate))
+
+# Replacing the outliers with the upper and lower limits
+df$Rate[df$Rate > bench_mark_upper] = bench_mark_upper
+df$Rate[df$Rate < bench_mark_lower] = bench_mark_lower
+
+boxplot(df$Rate, ylab = "Rate") # Rate has outliers
+
 # Data Collection
 rates = df[,2]
 View(rates)
@@ -58,7 +80,8 @@ converting_date = function(date_input){
 }
 
 # normalized data
-rates_normalized = lapply(rates, normalize)
+rates_normalized = data.frame(lapply(rates, normalize))
+View(rates_normalized)
 summary(rates_normalized)
 
 # Converting dates

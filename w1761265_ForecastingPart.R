@@ -70,6 +70,8 @@ dates = df[,1]
 View(dates)
   
 # min max scalar normalization
+min_rate = min(rates)
+max_rate = max(rates)
 normalize = function(x) {
   return ((x - min(x)) / (max(x) - min(x)))
 }
@@ -115,6 +117,16 @@ View(testing_data_date)
 predict_result = predict(model, testing_data_date)
 predict_result
 
+# un-normalizing the result to get the output rates which can be displayed to the user clearly
+unnormalize = function(x, min, max){
+  return( (max - min)*x + min )
+}
+
+unnormalized_predicted_result = unnormalize(predict_result, min_rate, max_rate)
+View(unnormalized_predicted_result)
+
+# xx = unnormalize(data.frame(testing_data$Rate), min_rate, max_rate)
+# View(xx)
 # Evaluation model performance
 
 

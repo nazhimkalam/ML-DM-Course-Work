@@ -107,7 +107,7 @@ summary(all_dates_in_decimal)
 
 # Combining data to a data-frame
 final_dataset = data.frame(all_dates_in_decimal, rates_normalized)
-# View(final_dataset)
+View(final_dataset)
 
 # Plotting the Date VS Rate after normalization
 plot(final_dataset$Date, final_dataset$Rate, main = "Date VS Rate (after normalization)",
@@ -122,18 +122,41 @@ testing_data = final_dataset[401:500,]
 # View(testing_data)
 
 # Training a model on the data
-set.seed(100)
-model <- neuralnet(Rate~.,hidden=c(3),  
+set.seed(101)
+
+# Loop from 1 to 10 node for one hidden layer
+# for (x in 6:10) {
+#   print("-----------------------------------------")
+#   model <- neuralnet(Rate~.,
+#                      # hidden=c(x),
+#                      hidden=c(6,x),
+#                      data = training_data,
+#                      act.fct = "logistic",
+#                      linear.output = TRUE,
+#                      err.fct = "sse",
+#                      lifesign = "full",
+#                      rep = 10,
+#                      learningrate = 0.1)
+# }
+
+# with one hidden layer and 6 nodes
+model <- neuralnet(Rate~.,
+                   hidden=c(6,6),  
                    data = training_data, 
                    act.fct = "logistic", 
-                   linear.output = TRUE) 
-plot(model)
+                   linear.output = TRUE,
+                   err.fct = "sse",
+                   lifesign = "full",
+                   rep = 10,
+                   learningrate = 0.1)
+
+plot(model,rep = 9)
 
 # Testing the model on the Test dataset
 # View(final_dataset)
 date_dataset = data.frame(final_dataset$Date)
 # View(testing_data_date)
-predict_result = predict(model, date_dataset)
+predict_result = predict(model, date_dataset, rep = 9)
 # View(predict_result)
 
 # un-normalizing the result to get the output rates which can be displayed to the user clearly
@@ -159,15 +182,29 @@ plot(date_dataset$final_dataset.Date, unnormalized_actual_result$final_dataset.R
      main = "Actual VS Predicted",
      xlab = "Date", ylab = "Rate", col = "orange", type="l")
 lines(date_dataset$final_dataset.Date,unnormalized_predicted_result,col="green")
+
 testing_data_date = date_dataset[401:500,]
 predicted_data_testing_rate = unnormalized_predicted_result[401:500,]
+
 lines(testing_data_date, predicted_data_testing_rate, col="red")
 
-# Evaluation model performance
+# Evaluation model performances
 
+# Filtering the Actual testing rates and the predicted rates from the model
+actual = data.frame(final_dataset$Rate)[401:500,]
+predicted = predict_result[401:500,]
 
+# Calculating the Mean Absolute Error
+mae = mae(actual, predicted) * 100
+print(paste("Mean Absolute Error: ", mae, " %", sep = ""))
 
+# Calculating the Root Mean Squared Error
+rmse = rmse(actual, predicted) * 100
+print(paste("Root Mean Squared Error: ", rmse, " %", sep = ""))
 
+# Calculating the Mean Absolute Percentage Error Loss
+mape = MAPE(actual, predicted) * 100
+print(paste("Mean Absolute Percentage Error Loss: ", mape, " %", sep = ""))
 
 
 

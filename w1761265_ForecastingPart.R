@@ -207,7 +207,8 @@ mape = MAPE(actual, predicted) * 100
 print(paste("Mean Absolute Percentage Error Loss: ", mape, " %", sep = ""))
 
 
-
+# Best total number of nodes for hidden layer 1 is 6
+# Best total number nodes for hidden layer 2 is 6
 
 
 # Code References Used

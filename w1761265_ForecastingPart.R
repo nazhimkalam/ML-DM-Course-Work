@@ -124,7 +124,7 @@ testing_data = final_dataset[401:500,]
 # Training a model on the data
 set.seed(101)
 
-# Loop from 1 to 10 node for one hidden layer
+# Loop from 1 to 10 node for one and two hidden layer to get the best node number for each layer
 # for (x in 6:10) {
 #   print("-----------------------------------------")
 #   model <- neuralnet(Rate~.,
@@ -139,18 +139,37 @@ set.seed(101)
 #                      learningrate = 0.1)
 # }
 
-# with one hidden layer and 6 nodes
+# Looping to get the best learning rate which gives the least amount of error rate for the 
+# model (this includes 1 layer and 2 layer model with 6 nodes for both layers since that 
+# is the optimal number of nodes found previously)
+# learning_rate = 0
+# while (learning_rate <= 0.5) {
+#   learning_rate = learning_rate + 0.01
+#   print(learning_rate)
+#   model <- neuralnet(Rate~.,
+#                      # hidden=c(6), 
+#                      hidden=c(6,6),
+#                      data = training_data, 
+#                      act.fct = "logistic", 
+#                      linear.output = TRUE,
+#                      err.fct = "sse",
+#                      lifesign = "full",
+#                      learningrate = learning_rate)
+# }
+
+# with one hidden layer and 6 nodes & two hidden layer with 6,6 nodes for the layers
 model <- neuralnet(Rate~.,
-                   hidden=c(6,6),  
+                   # hidden=c(6),  
+                   hidden=c(6,6),
                    data = training_data, 
                    act.fct = "logistic", 
                    linear.output = TRUE,
                    err.fct = "sse",
                    lifesign = "full",
                    rep = 10,
-                   learningrate = 0.1)
+                   learningrate = 0.08)
 
-plot(model,rep = 9)
+plot(model)
 
 # Testing the model on the Test dataset
 # View(final_dataset)

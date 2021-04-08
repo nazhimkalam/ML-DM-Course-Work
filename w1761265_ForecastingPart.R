@@ -47,25 +47,26 @@ print(sum(is.na(df)))
 # Checking for the summary of the data
 print(summary(df))
 
-# Plot for Date VS Rate (with outliers present)
-plot(df$Date, df$Rate, main = "Date VS Rate (with outliers)", xlab = "Date",
-     ylab = "Rate", col = "red", type = "l")
-
-# Checking for outliers present 
-boxplot(df$Rate, ylab = "Rate") # Rate has outliers
-boxplot(as.Date(df$Date), ylab = "Date") # Data has no outliers
-
-# Removing outliers from the "Rate" column dataset
-
-# Calculating the upper and lower limit for the data
-bench_mark_upper = quantile(df$Rate, 0.75) + (1.5 * IQR(df$Rate))
-bench_mark_lower = quantile(df$Rate, 0.25) - (1.5 * IQR(df$Rate))
-
-# Replacing the outliers with the upper and lower limits
-df$Rate[df$Rate > bench_mark_upper] = bench_mark_upper
-df$Rate[df$Rate < bench_mark_lower] = bench_mark_lower
-
-boxplot(df$Rate, ylab = "Rate") # Rate has outliers
+# REMOVE OUTLIERS (PLEASE REMOVE THEM BEFORE SUBMITTING)
+# # Plot for Date VS Rate (with outliers present)
+# plot(df$Date, df$Rate, main = "Date VS Rate (with outliers)", xlab = "Date",
+#      ylab = "Rate", col = "red", type = "l")
+# 
+# # Checking for outliers present 
+# boxplot(df$Rate, ylab = "Rate") # Rate has outliers
+# boxplot(as.Date(df$Date), ylab = "Date") # Data has no outliers
+# 
+# # Removing outliers from the "Rate" column dataset
+# 
+# # Calculating the upper and lower limit for the data
+# bench_mark_upper = quantile(df$Rate, 0.75) + (1.5 * IQR(df$Rate))
+# bench_mark_lower = quantile(df$Rate, 0.25) - (1.5 * IQR(df$Rate))
+# 
+# # Replacing the outliers with the upper and lower limits
+# df$Rate[df$Rate > bench_mark_upper] = bench_mark_upper
+# df$Rate[df$Rate < bench_mark_lower] = bench_mark_lower
+# 
+# boxplot(df$Rate, ylab = "Rate") # Rate has outliers
 
 # Plotting the rate vs data graph (without outliers present)
 plot(df$Date, df$Rate, main = "Date VS Rate (without outliers)", xlab = "Date", ylab = "Rate",
@@ -122,7 +123,7 @@ testing_data = final_dataset[401:500,]
 # View(testing_data)
 
 # Training a model on the data
-set.seed(101)
+set.seed(80)
 
 # Loop from 1 to 10 node for one and two hidden layer to get the best node number for each layer
 # for (x in 6:10) {
@@ -158,8 +159,19 @@ set.seed(101)
 # }
 
 # with one hidden layer and 6 nodes & two hidden layer with 6,6 nodes for the layers
+
+# OPTIMUM RESULT FOR 1 HIDDEN LAYER MLP
+# 6 NODES
+# LEARNING RATE = 0.12
+# ACTIVATION FUNCTION = LOGISTIC
+
+# OPTIMUM RESULT FOR 2 HIDDEN LAYER MLP
+# 6 6 NODES
+# LEARNING RATE = 0.08
+# ACTIVATION FUNCTION = LOGISTIC
+ 
 model <- neuralnet(Rate~.,
-                   # hidden=c(6),  
+                   # hidden=c(6),
                    hidden=c(6,6),
                    data = training_data, 
                    act.fct = "logistic", 
@@ -169,13 +181,13 @@ model <- neuralnet(Rate~.,
                    rep = 10,
                    learningrate = 0.08)
 
-plot(model)
+plot(model, rep = 3)
 
 # Testing the model on the Test dataset
 # View(final_dataset)
 date_dataset = data.frame(final_dataset$Date)
 # View(testing_data_date)
-predict_result = predict(model, date_dataset, rep = 9)
+predict_result = predict(model, date_dataset, rep = 3)
 # View(predict_result)
 
 # un-normalizing the result to get the output rates which can be displayed to the user clearly

@@ -13,7 +13,6 @@ install.packages("fpp2")
 install.packages("MLmetrics")
 install.packages("lubridate")
 
-
 # Loading the package
 library(fpp)
 library(MASS)
@@ -31,15 +30,13 @@ library(Metrics)
 
 # Reading the data-set "vehicles.xlsx"
 df = read_excel("./GitHub/ML-DM-Course-Work/ExchangeUSD.xlsx")
-# View(df)
+View(df)
 
 # Dropping unwanted columns
 df = subset(df, select = -c(Wdy))
-# View(df)
 
 # Renaming the Columns of the Data-frame
 df = setNames(df, c("Date", "Rate"))
-# View(df)
 
 # Checking for null values present from the dataset
 print(sum(is.na(df)))
@@ -47,17 +44,13 @@ print(sum(is.na(df)))
 # Checking for the summary of the data
 print(summary(df))
 
-# Plotting the rate vs data graph (without outliers present)
-plot(df$Date, df$Rate, main = "Date VS Rate", xlab = "Date", ylab = "Rate",
-     col = "blue", type = "l")
-
 # Data Collection
 rates = df[,2]
 # View(rates)
 
 dates = df[,1]
 # View(dates)
-  
+
 # min max scalar normalization
 min_rate = min(rates)
 max_rate = max(rates)
@@ -65,7 +58,6 @@ normalize = function(x) {
   return ((x - min(x)) / (max(x) - min(x)))
 }
 
-# Function for converting dates into decimal date format
 converting_date = function(date_input){
   return(decimal_date(ymd(date_input)))
 }
@@ -91,49 +83,12 @@ plot(final_dataset$Date, final_dataset$Rate, main = "Date VS Rate (after normali
 
 # Creating the Training Data
 training_data = final_dataset[1:400,]
-View(training_data)
 
 # Creating the Testing Data
 testing_data = final_dataset[401:500,]
-# View(testing_data)
 
 # Training a model on the data
-set.seed(80)
-
-# Loop from 1 to 10 node for one and two hidden layer to get the best node number for each layer
-# for (x in 6:10) {
-#   print("-----------------------------------------")
-#   model <- neuralnet(Rate~.,
-#                      # hidden=c(x),
-#                      hidden=c(6,x),
-#                      data = training_data,
-#                      act.fct = "logistic",
-#                      linear.output = TRUE,
-#                      err.fct = "sse",
-#                      lifesign = "full",
-#                      rep = 10,
-#                      learningrate = 0.1)
-# }
-
-# Looping to get the best learning rate which gives the least amount of error rate for the 
-# model (this includes 1 layer and 2 layer model with 6 nodes for both layers since that 
-# is the optimal number of nodes found previously)
-# learning_rate = 0
-# while (learning_rate <= 0.5) {
-#   learning_rate = learning_rate + 0.01
-#   print(learning_rate)
-#   model <- neuralnet(Rate~.,
-#                      # hidden=c(6), 
-#                      hidden=c(6,6),
-#                      data = training_data, 
-#                      act.fct = "logistic", 
-#                      linear.output = TRUE,
-#                      err.fct = "sse",
-#                      lifesign = "full",
-#                      learningrate = learning_rate)
-# }
-
-# with one hidden layer and 6 nodes & two hidden layer with 6,6 nodes for the layers
+set.seed(81)
 
 # OPTIMUM RESULT FOR 1 HIDDEN LAYER MLP
 # 6 NODES
@@ -144,80 +99,64 @@ set.seed(80)
 # 6 6 NODES
 # LEARNING RATE = 0.08
 # ACTIVATION FUNCTION = LOGISTIC
-for (index in 1:101) {
+training_data_copy = data.frame(training_data)
+# View(training_data_copy)
+
+for (index in 1:100) {
   model <- neuralnet(Rate~.,
                      # hidden=c(6),
                      hidden=c(6,6),
-                     data = training_data, 
+                     data = training_data_copy, 
                      act.fct = "logistic", 
                      linear.output = TRUE,
-                     err.fct = "sse",
-                     # lifesign = "full",
-                     # rep = 10,
+                     err.fct = "sse", 
                      learningrate = 0.08)
   
-  if(index != 101){
-    date_dataset = data.frame(final_dataset$Date)
-    date_dataset = data.frame(date_dataset[1:(400+index),])
-  }
- 
+  date_dataset = data.frame(final_dataset$Date)
+  date_dataset = data.frame(date_dataset[(200+index):(400+index),])
+  
   predict_result = predict(model, date_dataset)
-  training_data = data.frame(date_dataset, predict_result)
-  names(training_data)[1] = "Date"
-  names(training_data)[2] = "Rate"
-
+  
+  training_data_copy = data.frame(date_dataset, predict_result) 
+  training_data_copy[200:(400-index),] = training_data[(200+index):400,]
+  
+  names(training_data_copy)[1] = "Date"
+  names(training_data_copy)[2] = "Rate"
 }
-
-View(training_data)
-
-
-# model <- neuralnet(Rate~.,
-#                    hidden=c(6),
-#                    # hidden=c(6,6),
-#                    data = training_data, 
-#                    act.fct = "logistic", 
-#                    linear.output = TRUE,
-#                    err.fct = "sse",
-#                    lifesign = "full",
-#                    # rep = 10,
-#                    learningrate = 0.08)
+view(training_data_copy)
 plot(model)
 
-# Testing the model on the Test dataset
-# View(final_dataset)
-# date_dataset = data.frame(final_dataset$Date)
-# date_dataset = data.frame(date_dataset[1:400,])
-# # View(date_dataset)
-# predict_result = predict(model, date_dataset)
-# View(predict_result)
+# combine the first 1 to 400 date and rate with the training_data_copy
+predict_dataset_final = rbind(training_data[1:200,], training_data_copy)
+view(predict_dataset_final)
 
 # un-normalizing the result to get the output rates which can be displayed to the user clearly
-unnormalize = function(x, min, max){
-  return( (max - min)*x + min )
-}
+# unnormalize = function(x, min, max){
+#   return( (max - min)*x + min )
+# }
 
 # un-normalized predicted rate result
-unnormalized_predicted_result = unnormalize(predict_result, min_rate, max_rate)
+# unnormalized_predicted_result = unnormalize(predict_result, min_rate, max_rate)
 # View(unnormalized_predicted_result)
-
-# un-normalized actual rate result
-unnormalized_actual_result = unnormalize(data.frame(final_dataset$Rate), min_rate, max_rate)
+# 
+# # un-normalized actual rate result
+# unnormalized_actual_result = unnormalize(data.frame(final_dataset$Rate), min_rate, max_rate)
+# unnormalized_actual_result = data.frame(unnormalized_actual_result[101:500,])
 # View(unnormalized_actual_result)
 
 # Combining the predicted rate dataset and actual rate dataset
-combined_rates = data.frame(unnormalized_predicted_result, unnormalized_actual_result)
-combined_rates = setNames(combined_rates, c("Predicted Rates", "Actual Rates"))
-View(combined_rates)
+# combined_rates = data.frame(unnormalized_predicted_result, unnormalized_actual_result)
+# combined_rates = setNames(combined_rates, c("Predicted Rates", "Actual Rates"))
+# # View(combined_rates)
 
 # plotting Actual Rate VS Predicted Rate result
-# View(date_dataset$date_dataset.1..400...index....)
-plot(date_dataset$date_dataset.1..400...index...., combined_rates$`Actual Rates`,
+plot(final_dataset$Date, final_dataset$Rate,
      main = "Actual VS Predicted",
      xlab = "Date", ylab = "Rate", col = "orange", type="l")
-lines(date_dataset$date_dataset.1..400...index....,combined_rates$`Predicted Rates`,col="green")
+lines(final_dataset$Date,predict_dataset_final$Rate,col="green")
 
 testing_data_date = date_dataset[401:500,]
-predicted_data_testing_rate = unnormalized_predicted_result[401:500,]
+predicted_data_testing_rate = predicted_data_testing_rate[401:500,]
 
 lines(testing_data_date, predicted_data_testing_rate, col="red")
 
@@ -250,5 +189,4 @@ print(paste("Mean Absolute Percentage Error Loss: ", mape, " %", sep = ""))
 # https://github.com/cran/nnfor/blob/master/R/mlp.R
 # https://www.rdocumentation.org/packages/lubridate/versions/1.7.10/topics/decimal_date
 # https://www.gormanalysis.com/blog/dates-and-times-in-r-without-losing-your-sanity/
-
 

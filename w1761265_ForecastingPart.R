@@ -47,29 +47,8 @@ print(sum(is.na(df)))
 # Checking for the summary of the data
 print(summary(df))
 
-# REMOVE OUTLIERS (PLEASE REMOVE THEM BEFORE SUBMITTING)
-# # Plot for Date VS Rate (with outliers present)
-# plot(df$Date, df$Rate, main = "Date VS Rate (with outliers)", xlab = "Date",
-#      ylab = "Rate", col = "red", type = "l")
-# 
-# # Checking for outliers present 
-# boxplot(df$Rate, ylab = "Rate") # Rate has outliers
-# boxplot(as.Date(df$Date), ylab = "Date") # Data has no outliers
-# 
-# # Removing outliers from the "Rate" column dataset
-# 
-# # Calculating the upper and lower limit for the data
-# bench_mark_upper = quantile(df$Rate, 0.75) + (1.5 * IQR(df$Rate))
-# bench_mark_lower = quantile(df$Rate, 0.25) - (1.5 * IQR(df$Rate))
-# 
-# # Replacing the outliers with the upper and lower limits
-# df$Rate[df$Rate > bench_mark_upper] = bench_mark_upper
-# df$Rate[df$Rate < bench_mark_lower] = bench_mark_lower
-# 
-# boxplot(df$Rate, ylab = "Rate") # Rate has outliers
-
 # Plotting the rate vs data graph (without outliers present)
-plot(df$Date, df$Rate, main = "Date VS Rate (without outliers)", xlab = "Date", ylab = "Rate",
+plot(df$Date, df$Rate, main = "Date VS Rate", xlab = "Date", ylab = "Rate",
      col = "blue", type = "l")
 
 # Data Collection
@@ -86,11 +65,7 @@ normalize = function(x) {
   return ((x - min(x)) / (max(x) - min(x)))
 }
 
-# Function for converting dates into numbers
-# converting_date = function(date_input){
-#   return(as.numeric(as.Date(date_input)))
-# }
-
+# Function for converting dates into decimal date format
 converting_date = function(date_input){
   return(decimal_date(ymd(date_input)))
 }
@@ -116,7 +91,7 @@ plot(final_dataset$Date, final_dataset$Rate, main = "Date VS Rate (after normali
 
 # Creating the Training Data
 training_data = final_dataset[1:400,]
-# View(training_data)
+View(training_data)
 
 # Creating the Testing Data
 testing_data = final_dataset[401:500,]
@@ -169,25 +144,51 @@ set.seed(80)
 # 6 6 NODES
 # LEARNING RATE = 0.08
 # ACTIVATION FUNCTION = LOGISTIC
+for (index in 1:101) {
+  model <- neuralnet(Rate~.,
+                     # hidden=c(6),
+                     hidden=c(6,6),
+                     data = training_data, 
+                     act.fct = "logistic", 
+                     linear.output = TRUE,
+                     err.fct = "sse",
+                     # lifesign = "full",
+                     # rep = 10,
+                     learningrate = 0.08)
+  
+  if(index != 101){
+    date_dataset = data.frame(final_dataset$Date)
+    date_dataset = data.frame(date_dataset[1:(400+index),])
+  }
  
-model <- neuralnet(Rate~.,
-                   # hidden=c(6),
-                   hidden=c(6,6),
-                   data = training_data, 
-                   act.fct = "logistic", 
-                   linear.output = TRUE,
-                   err.fct = "sse",
-                   lifesign = "full",
-                   rep = 10,
-                   learningrate = 0.08)
+  predict_result = predict(model, date_dataset)
+  training_data = data.frame(date_dataset, predict_result)
+  names(training_data)[1] = "Date"
+  names(training_data)[2] = "Rate"
 
-plot(model, rep = 3)
+}
+
+View(training_data)
+
+
+# model <- neuralnet(Rate~.,
+#                    hidden=c(6),
+#                    # hidden=c(6,6),
+#                    data = training_data, 
+#                    act.fct = "logistic", 
+#                    linear.output = TRUE,
+#                    err.fct = "sse",
+#                    lifesign = "full",
+#                    # rep = 10,
+#                    learningrate = 0.08)
+plot(model)
 
 # Testing the model on the Test dataset
 # View(final_dataset)
-date_dataset = data.frame(final_dataset$Date)
-# View(testing_data_date)
-predict_result = predict(model, date_dataset, rep = 3)
+# date_dataset = data.frame(final_dataset$Date)
+# date_dataset = data.frame(date_dataset[1:400,])
+# # View(date_dataset)
+# predict_result = predict(model, date_dataset)
 # View(predict_result)
 
 # un-normalizing the result to get the output rates which can be displayed to the user clearly
@@ -206,13 +207,14 @@ unnormalized_actual_result = unnormalize(data.frame(final_dataset$Rate), min_rat
 # Combining the predicted rate dataset and actual rate dataset
 combined_rates = data.frame(unnormalized_predicted_result, unnormalized_actual_result)
 combined_rates = setNames(combined_rates, c("Predicted Rates", "Actual Rates"))
-# View(combined_rates)
+View(combined_rates)
 
 # plotting Actual Rate VS Predicted Rate result
-plot(date_dataset$final_dataset.Date, unnormalized_actual_result$final_dataset.Rate,
+# View(date_dataset$date_dataset.1..400...index....)
+plot(date_dataset$date_dataset.1..400...index...., combined_rates$`Actual Rates`,
      main = "Actual VS Predicted",
      xlab = "Date", ylab = "Rate", col = "orange", type="l")
-lines(date_dataset$final_dataset.Date,unnormalized_predicted_result,col="green")
+lines(date_dataset$date_dataset.1..400...index....,combined_rates$`Predicted Rates`,col="green")
 
 testing_data_date = date_dataset[401:500,]
 predicted_data_testing_rate = unnormalized_predicted_result[401:500,]

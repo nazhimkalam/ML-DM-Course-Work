@@ -12,19 +12,22 @@ install.packages("factoextra") # used to determine the optimal number clusters
 install.packages("NbClust")    # used to compute about multiple methods at once,
 # in order to find the optimal number of clusters.
 install.packages("factoextra") # used to plot the clusters out
-# install.packages("caret")
-# install.packages("geosphere")
+
 
 # Loading the package
 library(readxl)
+library(knitr)
+library(tidymodels)
+library(janitor)
+library(flexclust)
+library(dplyr)
 library(factoextra)
 library(NbClust)
+library(haven)
 library(factoextra)
-# library(caret)
-# library(geosphere)
 
 # Reading the data-set "vehicles.xlsx"
-df = read_excel("./GitHub/ML-DM-Course-Work/vehicles.xlsx")
+df = read_excel("./vehicles.xlsx")
 View(df)
 
 # converting the class column into factors because we are not able to get its count

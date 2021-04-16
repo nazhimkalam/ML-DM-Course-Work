@@ -261,3 +261,14 @@ legend("bottomright",                    # Add legend to plot
        col = 1:2, 
        lty = 1,
        cex = 0.50)
+
+# Best total number of nodes for hidden layer 1 is 6
+# Best total number nodes for hidden layer 2 is 6
+
+
+# Code References Used
+# https://github.com/EviSfn/MLP-neural-network/blob/master/neuralnetwork.R
+# https://github.com/alexsnow348/Exchange-Rate-Forecasting-Using-Ensemble-ANN-Model/blob/master/MLP.R
+# https://github.com/cran/nnfor/blob/master/R/mlp.R
+# https://www.rdocumentation.org/packages/lubridate/versions/1.7.10/topics/decimal_date
+# https://www.gormanalysis.com/blog/dates-and-times-in-r-without-losing-your-sanity/

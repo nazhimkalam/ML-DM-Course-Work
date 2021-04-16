@@ -69,8 +69,8 @@ model <- neuralnet(Rate_Original~Rate_AR1,
                    err.fct = "sse", 
                    learningrate = 0.08)
 
-testing_data_actual_rate = data.frame(testing_data$Rate_Original)
-predict_result = predict(model, testing_data_actual_rate)
+# testing_data_actual_rate = data.frame(testing_data)
+predict_result = predict(model, testing_data)
 View(predict_result)
 
 # Plotting the graph
@@ -86,19 +86,19 @@ legend("bottomright",                    # Add legend to plot
 
 
 # Evaluating the model
-actual = data.frame(testing_data$Rate_Original)
+actual = data.frame(testing_data)
 predicted = predict_result
 
 # Calculating the Mean Absolute Error
-mae = round(mae(actual$testing_data.Rate_Original, predicted) * 100, digits = 4)
+mae = round(mae(actual$Rate_Original, predicted) * 100, digits = 4)
 print(paste("Mean Absolute Error: ", mae, " %", sep = ""))
 
 # Calculating the Root Mean Squared Error
-rmse = round(rmse(actual$testing_data.Rate_Original, predicted) * 100, digits = 4)
+rmse = round(rmse(actual$Rate_Original, predicted) * 100, digits = 4)
 print(paste("Root Mean Squared Error: ", rmse, " %", sep = ""))
 
 # Calculating the Mean Absolute Percentage Error Loss
-mape = round(MAPE(actual$testing_data.Rate_Original, predicted) * 100, digits = 4)
+mape = round(MAPE(actual$Rate_Original, predicted) * 100, digits = 4)
 print(paste("Mean Absolute Percentage Error Loss: ", mape, " %", sep = ""))
 
 #---------------------------------------------------------------------------

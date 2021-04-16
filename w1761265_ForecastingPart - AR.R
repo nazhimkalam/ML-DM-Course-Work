@@ -62,7 +62,7 @@ View(df)
 # Variables used for 1 hidden and 2 hidden layers for the neural network
 # NOTE: One of the two sets have to be commented while the other set is used for the model training
 
-# THIS SET OF VARIABLES IS USED FOR 1 HIDDEN LAYER MLP
+# # THIS SET OF VARIABLES IS USED FOR 1 HIDDEN LAYER MLP
 # HIDDEN_LAYERS = c(6)
 # ACTIVATION_FUNCTION = "logistic"
 # LEARNING_RATE = 0.1
@@ -267,7 +267,7 @@ View(df.normalized)
 training_data = df.normalized[1:400,]
 
 # Creating the Testing Data
-testing_data = df.normalized[401:500-1,]
+testing_data = df.normalized[401:499,]
 View(testing_data)
 
 # Training a model on the data
@@ -281,6 +281,9 @@ model <- neuralnet(Rate_Original~Rate_Lag,
                    linear.output = TRUE,
                    err.fct = "sse", 
                    learningrate = LEARNING_RATE)
+
+# Plotting the model network structure
+plot(model)
 
 # testing_data_actual_rate = data.frame(testing_data)
 predict_result = predict(model, testing_data)
@@ -298,6 +301,29 @@ legend("bottomright",                    # Add legend to plot
        col = 1:2, 
        lty = 1,
        cex = 0.50)
+
+# Evaluating the model
+actual = data.frame(testing_data)
+predicted = predict_result
+
+# Displaying the predicted and the desired output
+predicted_desired_output = data.frame(testing_data$Rate_Original, predicted)
+predicted_desired_output = setNames(predicted_desired_output, c("Desired_Output", "Predicted_Output"))
+View(predicted_desired_output)
+
+# Calculating the Mean Absolute Error
+mae = round(mae(actual$Rate_Original, predicted) * 100, digits = 4)
+print(paste("Mean Absolute Error: ", mae, " %", sep = ""))
+
+# Calculating the Root Mean Squared Error
+rmse = round(rmse(actual$Rate_Original, predicted) * 100, digits = 4)
+print(paste("Root Mean Squared Error: ", rmse, " %", sep = ""))
+
+# Calculating the Mean Absolute Percentage Error Loss
+mape = round(MAPE(actual$Rate_Original, predicted) * 100, digits = 4)
+print(paste("Mean Absolute Percentage Error Loss: ", mape, " %", sep = ""))
+
+
 
 # Best total number of nodes for hidden layer 1 is 6
 # Best total number nodes for hidden layer 2 is 6

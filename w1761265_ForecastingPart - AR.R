@@ -6,21 +6,21 @@
 
 # FORECASTING PART 
 # Installing package to read Excel Data-set
-install.packages("fpp")
-install.packages("MASS")
-install.packages("readxl")
-install.packages("neuralnet")
-install.packages("ggplot2")
-install.packages("reshape2")
-install.packages("gridExtra")
-install.packages("fpp2")
-install.packages("e1071")
-install.packages("openxlsx")
-install.packages("MLmetrics")
-install.packages("lubridate")
-install.packages("Metrics")
-install.packages("tidyr")
-install.packages("graphics")
+# install.packages("fpp")
+# install.packages("MASS")
+# install.packages("readxl")
+# install.packages("neuralnet")
+# install.packages("ggplot2")
+# install.packages("reshape2")
+# install.packages("gridExtra")
+# install.packages("fpp2")
+# install.packages("e1071")
+# install.packages("openxlsx")
+# install.packages("MLmetrics")
+# install.packages("lubridate")
+# install.packages("Metrics")
+# install.packages("tidyr")
+# install.packages("graphics")
 
 # Loading the package
 library(fpp)
@@ -65,7 +65,7 @@ View(df)
 # THIS SET OF VARIABLES IS USED FOR 1 HIDDEN LAYER MLP
 # HIDDEN_LAYERS = c(6)
 # ACTIVATION_FUNCTION = "logistic"
-# LEARNING_RATE = 0.12
+# LEARNING_RATE = 0.1
 
 # THIS SET OF VARIABLES ARE USED FOR THE 2 HIDDEN LAYER MLP
 HIDDEN_LAYERS = c(6,6)
@@ -112,16 +112,34 @@ for (index in 1:10) {
   # Loop from 1 to 10 node for one and two hidden layer to get the best node number for each layer
   # for (x in 1:10) {
   #   print("-----------------------------------------")
-  #   model <- neuralnet(Rate~.,
-  #                      # hidden=c(x),
-  #                      hidden=c(6,x),
+  #   model <- neuralnet(Rate_Original~Rate_Lag,
+  #                      hidden=c(x),
+  #                      # hidden=c(6,x),
   #                      data = training_data,
   #                      act.fct = "logistic",
   #                      linear.output = TRUE,
   #                      err.fct = "sse",
-  #                      lifesign = "full",
-  #                      rep = 10,
   #                      learningrate = 0.1)
+  #   
+  #   predict_result = predict(model, testing_data)
+  #   View(predict_result)
+  #   
+  #   # Evaluating the model
+  #   actual = data.frame(testing_data)
+  #   predicted = predict_result
+  #   
+  #   print(paste("Nodes:", x))
+  #   # Calculating the Mean Absolute Error
+  #   mae = round(mae(actual$Rate_Original, predicted) * 100, digits = 4)
+  #   print(paste("Mean Absolute Error: ", mae, " %", sep = ""))
+  #   
+  #   # Calculating the Root Mean Squared Error
+  #   rmse = round(rmse(actual$Rate_Original, predicted) * 100, digits = 4)
+  #   print(paste("Root Mean Squared Error: ", rmse, " %", sep = ""))
+  #   
+  #   # Calculating the Mean Absolute Percentage Error Loss
+  #   mape = round(MAPE(actual$Rate_Original, predicted) * 100, digits = 4)
+  #   print(paste("Mean Absolute Percentage Error Loss: ", mape, " %", sep = ""))
   # }
   
   # PLEASE DONT UN-COMMENT AND RUN THIS BECAUSE THIS WAS USED ONLY TO GET THE BEST LEARNING RATE
@@ -129,19 +147,38 @@ for (index in 1:10) {
   # model (this includes 1 layer and 2 layer model with 6 nodes for both layers since that 
   # is the optimal number of nodes found previously)
   # learning_rate = 0
-  # while (learning_rate <= 1) {
-  #   learning_rate = learning_rate + 0.01
+  # while (learning_rate <= 0.1) {
+  #   learning_rate = learning_rate + 0.02
   #   print(learning_rate)
-  #   model <- neuralnet(Rate~.,
-  #                      # hidden=c(6), 
-  #                      hidden=c(6,6),
-  #                      data = training_data, 
-  #                      act.fct = "logistic", 
+  #   model <- neuralnet(Rate_Original~Rate_Lag,
+  #                      hidden=c(6),
+  #                      # hidden=c(6,6),
+  #                      data = training_data,
+  #                      act.fct = "logistic",
   #                      linear.output = TRUE,
   #                      err.fct = "sse",
-  #                      lifesign = "full",
   #                      learningrate = learning_rate)
-  # }
+  #   
+  #   predict_result = predict(model, testing_data)
+  #   View(predict_result)
+  #   
+  #   # Evaluating the model
+  #   actual = data.frame(testing_data)
+  #   predicted = predict_result
+  #   
+  #   print(paste("learning_rate:", learning_rate))
+  #   # Calculating the Mean Absolute Error
+  #   mae = round(mae(actual$Rate_Original, predicted) * 100, digits = 4)
+  #   print(paste("Mean Absolute Error: ", mae, " %", sep = ""))
+  #   
+  #   # Calculating the Root Mean Squared Error
+  #   rmse = round(rmse(actual$Rate_Original, predicted) * 100, digits = 4)
+  #   print(paste("Root Mean Squared Error: ", rmse, " %", sep = ""))
+  #   
+  #   # Calculating the Mean Absolute Percentage Error Loss
+  #   mape = round(MAPE(actual$Rate_Original, predicted) * 100, digits = 4)
+  #   print(paste("Mean Absolute Percentage Error Loss: ", mape, " %", sep = ""))
+  # }  
   
   # PLEASE DONT UN-COMMENT AND RUN THIS BECAUSE THIS WAS USED ONLY TO CHECK WHICH ACTIVATION FUNCTION
   # PERFORMS BEST WITH THE FOUND BEST NODES AND LEARNING RATE VALUES
@@ -155,14 +192,14 @@ for (index in 1:10) {
   #            linear.output = TRUE,
   #            err.fct = "sse",
   #            lifesign = "full",
-  #            learningrate = 0.08)
+  #            learningrate = 0.1)
   # }
   
   # with one hidden layer and 6 nodes & two hidden layer with 6,6 nodes for the layers
   
   # OPTIMUM RESULT FOR 1 HIDDEN LAYER MLP
   # 6 NODES
-  # LEARNING RATE = 0.12
+  # LEARNING RATE = 0.1
   # ACTIVATION FUNCTION = LOGISTIC
   
   # OPTIMUM RESULT FOR 2 HIDDEN LAYER MLP
@@ -173,12 +210,12 @@ for (index in 1:10) {
   # Training the model
   model <- neuralnet(Rate_Original~Rate_Lag,
                      hidden = HIDDEN_LAYERS,
-                     data = training_data, 
-                     act.fct = ACTIVATION_FUNCTION, 
+                     data = training_data,
+                     act.fct = ACTIVATION_FUNCTION,
                      linear.output = TRUE,
-                     err.fct = "sse", 
+                     err.fct = "sse",
                      learningrate = LEARNING_RATE)
-  
+
   # testing_data_actual_rate = data.frame(testing_data)
   predict_result = predict(model, testing_data)
   View(predict_result)

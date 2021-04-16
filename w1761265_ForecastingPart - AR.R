@@ -39,12 +39,16 @@ library(Metrics)
 library(tidyr)
 library(graphics)
 
-#---------------------------------------------------------------------------
-# Checking with AR1
 
 # Reading the data-set "vehicles.xlsx"
 df = read_excel("./ExchangeUSD.xlsx")
 View(df)
+
+# Checking for null values present from the dataset
+print(sum(is.na(df)))
+
+# Checking for the summary of the data
+print(summary(df))
 
 # Dropping unwanted columns
 df = subset(df, select = -c(Wdy, `YYYY/MM/DD`))
@@ -76,8 +80,10 @@ for (index in 1:10) {
   # Renaming the Columns of the Data-frame
   df = setNames(df, c("Rate_Original", "Rate_Lag"))
   
-  # Shifting the Rate_Lag column rows by one down below
-  df['Rate_Lag'] <- c(NA, head(df['Rate_Lag'], dim(df)[1] - 1)[[1]])
+  # Shifting the Rate_Lag column rows by one down below for every loop
+  for (loop in 1:index) {
+    df['Rate_Lag'] <- c(NA, head(df['Rate_Lag'], dim(df)[1] - 1)[[1]])
+  }
   
   # Removing the first row from the dataframe because there is a null value present in the Rate_Lag column
   df = drop_na(df)

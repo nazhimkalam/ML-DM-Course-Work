@@ -119,25 +119,26 @@ remove.outliers(df.filtered$Kurt.Maxis, "Kurt.Maxis")
 remove.outliers(df.filtered$Holl.Ra, "Holl.Ra")
 
 # NORMALIZING THE DATASET (BRINGING ALL THE DATA INTO A SINGLE UNQIUE SCALE)
-# Performing normalization using the Z-Score Standardization
+# Performing normalization using the Z-Score Standardization [STANDARD NORMALIZATION]
 df.normalized = as.data.frame(scale(df.filtered))
 View(df.normalized)
 
 # PERFORMING PCA (PRINCIPAL COMPONENT ANALYSIS) / DIMENSIONALITY REDUCTION
-df.pca = prcomp(df.normalized)
-summary(df.pca)
-
-# Plotting the PCA data to find the best number of Principal Components.
-# Using the elbow method of the plot below we can get the number of components which 
-# explain 85% or greater of the variation (BEST SET OF COMPONENTS TO TAKE)
-# In this case the first 4 components are the best, because it covers the greatest 
-# area of the graph and has the sudden decrease after the 4th component
-plot(df.pca)
-plot(df.pca, type='l')
-
-# comp.data contains the BEST PCA Component data extract
-comp.data = data.frame(df.pca$x[,1:4])
-View(comp.data)
+# df.pca = prcomp(df.normalized)
+# summary(df.pca)
+# 
+# # Plotting the PCA data to find the best number of Principal Components.
+# # Using the elbow method of the plot below we can get the number of components which 
+# # explain 85% or greater of the variation (BEST SET OF COMPONENTS TO TAKE)
+# # In this case the first 4 components are the best, because it covers the greatest 
+# # area of the graph and has the sudden decrease after the 4th component
+# plot(df.pca)
+# plot(df.pca, type='l')
+# 
+# # comp.data contains the BEST PCA Component data extract
+# comp.data = data.frame(df.pca$x[,1:4])
+# View(comp.data)
+#----------------------END OF PERFORMING PCA
 
 # DETERMINE THE NUMBER OF CLUSTERS CENTERS (CENTROIDS) (via MANUAL and AUTOMATED TOOLS)
 
@@ -145,13 +146,13 @@ View(comp.data)
 
 # USING ELBOW METHOD (Gave 4)
 # The below method points out that 4 is the optimal number of centroids/clusters to be taken
-fviz_nbclust(comp.data, kmeans, method = "wss") + 
+fviz_nbclust(df.normalized, kmeans, method = "wss") + 
   geom_vline(xintercept = 4, linetype = 2) + 
   labs(subtitle = "Elbow method")
 
 # USING THE SILHOUETTE METHOD (Gave 2)
 # The below method points out that 2 is the optimal number of centroids/clusters to be taken
-fviz_nbclust(comp.data, kmeans, method = "silhouette")+
+fviz_nbclust(df.normalized, kmeans, method = "silhouette")+
   labs(subtitle = "Silhouette method")
 
 # USING GAP STATISTIC ( nboot = 50 to keep the function speedy
@@ -159,8 +160,8 @@ fviz_nbclust(comp.data, kmeans, method = "silhouette")+
 # Use verbose = FALSE to hide computing progression.)
 # (Gave 3)
 # The below method points out that 3 is the optimal number of centroids/clusters to be taken
-set.seed(150)
-fviz_nbclust(comp.data, kmeans, nstart = 50,  method = "gap_stat", nboot = 50)+
+set.seed(101)
+fviz_nbclust(df.normalized, kmeans, nstart = 50,  method = "gap_stat", nboot = 50)+
   labs(subtitle = "Gap statistic method")
 
 
@@ -219,12 +220,12 @@ classification_report <- function(comparison_table, dp = 2) {
 # Looping from 1 to the max optimal cluster to find its evaluation result
 for (i in 1:10){
   cat("<=============== ", "Custer ", i, " ===============>\n", sep = "")
-  set.seed(50)
+  set.seed(20)
   
   # Performing Kmeans clustering
-  vehicleCluster = kmeans(comp.data, centers = i, nstart = 20)
+  vehicleCluster = kmeans(df.normalized, centers = i, nstart = 20)
   
-  # This is the confusion matrix
+  set.seed(50)# This is the confusion matrix
   cm = as.matrix(table(Actual = df$Class, Predicted = vehicleCluster$cluster))
   print("Confusion Matrix")
   print(cm)
@@ -246,9 +247,9 @@ plot(1:10,
 
 # from the accuracy result we can see that we got the highest accuracy result for
 # 2 clusters (33%)
-set.seed(100)
-vehicleCluster = kmeans(comp.data, centers = 2, nstart = 20)
-fviz_cluster(vehicleCluster, data = comp.data)
+set.seed(20)
+vehicleCluster = kmeans(df.normalized, centers = 4, nstart = 20)
+fviz_cluster(vehicleCluster, data = df.normalized)
 
 # Displaying the sizes(number of observations in each cluster) of each cluster 
 vehicleCluster$size
@@ -257,8 +258,6 @@ vehicleCluster$size
 vehicleCluster$cluster
 
 # Getting the centers (A matrix of cluster centers). 
-# You get a 2 by 4 matrix representing the centers of each cluster (x,y,z,z') 
-# (4D coordinates) due to PCA we took 4D Data
 vehicleCluster$centers 
 View(vehicleCluster$centers)
 

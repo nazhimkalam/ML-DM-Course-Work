@@ -7,12 +7,11 @@
 # CLUSTERING PART 
 
 # Installing package to read Excel Data-set
-install.packages("readxl")     # used to read excel data files
-install.packages("factoextra") # used to determine the optimal number clusters
-install.packages("NbClust")    # used to compute about multiple methods at once,
-# in order to find the optimal number of clusters.
-install.packages("factoextra") # used to plot the clusters out
-
+# install.packages("readxl")     # used to read excel data files
+# install.packages("factoextra") # used to determine the optimal number clusters
+# install.packages("NbClust")    # used to compute about multiple methods at once,
+# # in order to find the optimal number of clusters.
+# install.packages("factoextra") # used to plot the clusters out
 
 # Loading the package
 library(readxl)

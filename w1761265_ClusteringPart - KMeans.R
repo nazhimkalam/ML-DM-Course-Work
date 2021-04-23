@@ -123,14 +123,18 @@ remove.outliers(df.filtered$Holl.Ra, "Holl.Ra")
 df.normalized = as.data.frame(scale(df.filtered))
 View(df.normalized)
 
+#------------------------------BEGINING OF PERFORMING PCA-----------------------
+# THIS SECTION IS COMMENTED OUT BECAUSE THE CW SPECIFICATION MENTIONED THAT 
+# ASSUME PCA IS NOT USED  FOR THIS PROBLEM (BY TAKING ALL THE INITAIL FEATURES 
+# FOR PREDICTION).
 # PERFORMING PCA (PRINCIPAL COMPONENT ANALYSIS) / DIMENSIONALITY REDUCTION
 # df.pca = prcomp(df.normalized)
 # summary(df.pca)
 # 
 # # Plotting the PCA data to find the best number of Principal Components.
-# # Using the elbow method of the plot below we can get the number of components which 
+# # Using the elbow method of the plot below we can get the number of components which
 # # explain 85% or greater of the variation (BEST SET OF COMPONENTS TO TAKE)
-# # In this case the first 4 components are the best, because it covers the greatest 
+# # In this case the first 4 components are the best, because it covers the greatest
 # # area of the graph and has the sudden decrease after the 4th component
 # plot(df.pca)
 # plot(df.pca, type='l')
@@ -138,7 +142,7 @@ View(df.normalized)
 # # comp.data contains the BEST PCA Component data extract
 # comp.data = data.frame(df.pca$x[,1:4])
 # View(comp.data)
-#----------------------END OF PERFORMING PCA
+#------------------------------END OF PERFORMING PCA----------------------------
 
 # DETERMINE THE NUMBER OF CLUSTERS CENTERS (CENTROIDS) (via MANUAL and AUTOMATED TOOLS)
 
@@ -160,7 +164,6 @@ fviz_nbclust(df.normalized, kmeans, method = "silhouette")+
 # Use verbose = FALSE to hide computing progression.)
 # (Gave 3)
 # The below method points out that 3 is the optimal number of centroids/clusters to be taken
-set.seed(101)
 fviz_nbclust(df.normalized, kmeans, nstart = 50,  method = "gap_stat", nboot = 50)+
   labs(subtitle = "Gap statistic method")
 

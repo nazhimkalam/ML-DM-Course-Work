@@ -122,10 +122,10 @@ remove.outliers(df.filtered$Holl.Ra, "Holl.Ra")
 df.normalized = as.data.frame(scale(df.filtered))
 View(df.normalized)
 
-#------------------------------BEGINING OF PERFORMING PCA-----------------------
 # THIS SECTION IS COMMENTED OUT BECAUSE THE CW SPECIFICATION MENTIONED THAT 
 # ASSUME PCA IS NOT USED  FOR THIS PROBLEM (BY TAKING ALL THE INITAIL FEATURES 
 # FOR PREDICTION).
+#------------------------------BEGINING OF PERFORMING PCA-----------------------
 # PERFORMING PCA (PRINCIPAL COMPONENT ANALYSIS) / DIMENSIONALITY REDUCTION
 # df.pca = prcomp(df.normalized)
 # summary(df.pca)
@@ -147,10 +147,19 @@ View(df.normalized)
 
 # AUTOMATED TOOLS TO FIND THE CENTROIDS
 
-# USING ELBOW METHOD (Gave 4)
-# The below method points out that 4 is the optimal number of centroids/clusters to be taken
+# Using NbClust()
+# Using Euclidean for distance (Gave 2)
+cluster_euclidean = NbClust(df.normalized, distance = "euclidean", min.nc = 2, max.nc = 10, method = "kmeans",
+                            index = "all")
+
+# Using Manhattan for distance (Gave 2)
+cluster_manhattan = NbClust(df.normalized, distance = "manhattan", min.nc = 2, max.nc = 10, method = "kmeans",
+                            index = "all")
+# Using fviz_nbclust()
+# USING ELBOW METHOD (Gave 3)
+# The below method points out that 3 is the optimal number of centroids/clusters to be taken
 fviz_nbclust(df.normalized, kmeans, method = "wss") + 
-  geom_vline(xintercept = 4, linetype = 2) + 
+  geom_vline(xintercept = 3, linetype = 2) + 
   labs(subtitle = "Elbow method")
 
 # USING THE SILHOUETTE METHOD (Gave 2)
@@ -219,10 +228,11 @@ classification_report <- function(comparison_table, dp = 2) {
   
 }
 
+# Manual Finding clusters
 # Looping from 1 to the max optimal cluster to find its evaluation result
 for (i in 1:10){
   cat("<=============== ", "Custer ", i, " ===============>\n", sep = "")
-  set.seed(20)
+  set.seed(150)
   
   # Performing Kmeans clustering
   vehicleCluster = kmeans(df.normalized, centers = i, nstart = 20)
@@ -241,16 +251,16 @@ for (i in 1:10){
 
 # plot to find the best number of clusters to be taken
 plot(1:10, 
-     tot.withinss, 
+     tot.withinss,
      type="b",
      pch=19,
      xlab = "Number of clusters K",
      ylab = "Total within-clusters sum of squares")
 
 # from the accuracy result we can see that we got the highest accuracy result for
-# 2 clusters (33%)
-set.seed(20)
-vehicleCluster = kmeans(df.normalized, centers = 4, nstart = 20)
+# 2 clusters (36%)
+set.seed(150)
+vehicleCluster = kmeans(df.normalized, centers = 2, nstart = 20)
 fviz_cluster(vehicleCluster, data = df.normalized)
 
 # Displaying the sizes(number of observations in each cluster) of each cluster 

@@ -148,26 +148,26 @@ View(df.normalized)
 # AUTOMATED TOOLS TO FIND THE CENTROIDS
 
 # Using NbClust()
-# Using Euclidean for distance (Gave 2)
+# Using Euclidean for distance (Gave 2) using kmeans
 cluster_euclidean = NbClust(df.normalized, distance = "euclidean", min.nc = 2, max.nc = 10, method = "kmeans",
                             index = "all")
 
-# Using Manhattan for distance (Gave 2)
+# Using Manhattan for distance (Gave 2) using kmeans
 cluster_manhattan = NbClust(df.normalized, distance = "manhattan", min.nc = 2, max.nc = 10, method = "kmeans",
                             index = "all")
 # Using fviz_nbclust()
-# USING ELBOW METHOD (Gave 3)
+# USING ELBOW METHOD for kmeans (Gave 3)
 # The below method points out that 3 is the optimal number of centroids/clusters to be taken
 fviz_nbclust(df.normalized, kmeans, method = "wss") + 
   geom_vline(xintercept = 3, linetype = 2) + 
   labs(subtitle = "Elbow method")
 
-# USING THE SILHOUETTE METHOD (Gave 2)
+# USING THE SILHOUETTE METHOD for kmeans (Gave 2)
 # The below method points out that 2 is the optimal number of centroids/clusters to be taken
 fviz_nbclust(df.normalized, kmeans, method = "silhouette")+
   labs(subtitle = "Silhouette method")
 
-# USING GAP STATISTIC ( nboot = 50 to keep the function speedy
+# USING GAP STATISTIC for kmeans ( nboot = 50 to keep the function speedy
 # recommended value: nboot= 500 for your analysis.
 # Use verbose = FALSE to hide computing progression.)
 # (Gave 3)
